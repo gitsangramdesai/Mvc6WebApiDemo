@@ -1,0 +1,12 @@
+﻿{
+  "AppSettings": {
+    "SiteTitle": "Contact Ripples"
+  },
+  "DefaultAdminUsername": "admin@nowhere.com",
+  "DefaultAdminPassword": "nothing",
+  "Data": {
+    "DefaultConnection": {
+         "Connectionstring": "Server=DESKTOP-IKH8KH5\\MSSQLSERVER14;Database=Contact;Trusted_Connection=False;MultipleActiveResultSets=true;User ID=sa;Password=sangram;"
+    }
+  }
+}
