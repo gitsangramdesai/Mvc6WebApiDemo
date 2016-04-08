@@ -6,7 +6,7 @@ using WebApplication1.Models;
 
 namespace WebApplication1.Repository
 {
-    public interface IRepository<TEnt, in TPk> where TEnt : ModelBase
+    public interface IRepository<TEnt, in TPk> : IDisposable  where TEnt:ModelBase
     {
         IEnumerable<TEnt> GetAll();
         TEnt FindById(TPk id);

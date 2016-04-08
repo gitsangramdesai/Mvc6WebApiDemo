@@ -9,21 +9,18 @@ using Microsoft.AspNet.Mvc;
 namespace WebApplication1.Controllers
 {
     [Route("api/[controller]")]
-    public class ContactsController : Controller
+    public class ContactsController : ControllerBase
     {
-        [FromServices]
-        public IContactsRepository ContactsRepo { get; set; }
-
         [HttpGet]
         public IEnumerable<Contact> GetAll()
         {
-            return ContactsRepo.GetAll();
+            return unitOfWork.ContactRepository.GetAll();
         }
 
         [HttpGet("{id}", Name = "GetContacts")]
         public IActionResult GetById(Guid id)
         {
-            var item = ContactsRepo.FindById(id);
+            var item = unitOfWork.ContactRepository.FindById(id);
             if (item == null)
             {
                 return HttpNotFound();
@@ -38,7 +35,7 @@ namespace WebApplication1.Controllers
             {
                 return HttpBadRequest();
             }
-            ContactsRepo.Add(item);
+            unitOfWork.ContactRepository.Add(item);
             return CreatedAtRoute("GetContacts", new { Controller = "Contacts", id = item.ID }, item);
         }
 
@@ -49,19 +46,19 @@ namespace WebApplication1.Controllers
             {
                 return HttpBadRequest();
             }
-            var contactObj = ContactsRepo.FindById(id);
+            var contactObj = unitOfWork.ContactRepository.FindById(id);
             if (contactObj == null)
             {
                 return HttpNotFound();
             }
-            ContactsRepo.Update(item);
+            unitOfWork.ContactRepository.Update(item);
             return new NoContentResult();
         }
 
         [HttpDelete("{id}")]
         public void Delete(Contact item)
         {
-            ContactsRepo.Remove(item);
+            unitOfWork.ContactRepository.Remove(item);
         }
     }
 }

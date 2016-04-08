@@ -8,7 +8,7 @@ using Microsoft.Data.Entity;
 
 namespace WebApplication1.Repository
 {
-    public class CallsRepository : Repository<Call>, ICallRepository
+    public class CallsRepository : Repository<Call>, ICallRepository, IDisposable
     {
         public CallsRepository(ApplicationContext dbContext)
         {

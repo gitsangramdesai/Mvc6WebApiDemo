@@ -6,7 +6,7 @@ using WebApplication1.Models;
 
 namespace WebApplication1.Repository
 {
-    public interface IContactsRepository
+    public interface IContactsRepository: IDisposable
     {
         void Add(Contact item);
         IEnumerable<Contact> GetAll();

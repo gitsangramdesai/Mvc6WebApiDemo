@@ -35,8 +35,7 @@ namespace WebApplication1
         public void ConfigureServices(IServiceCollection services)
         {
             //MvcCore - basic package needed for MVC 6 Web API
-            services.AddMvcCore()
-                    .AddJsonFormatters(a => a.ContractResolver = new CamelCasePropertyNamesContractResolver());
+            services.AddMvcCore().AddJsonFormatters(a => a.ContractResolver = new CamelCasePropertyNamesContractResolver());
 
             services.AddEntityFramework().AddSqlServer().AddDbContext<ApplicationContext>(options =>options.UseSqlServer(Configuration["Data:DefaultConnection:ConnectionString"]));
             services.AddMvc();

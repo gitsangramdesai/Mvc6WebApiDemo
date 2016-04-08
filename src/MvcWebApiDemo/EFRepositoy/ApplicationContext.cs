@@ -11,9 +11,7 @@ namespace WebApplication1.EFRepositoy
     {
         private static bool _created = false;
         public DbSet<Contact> Contacts { get; set; }
-
         public DbSet<Call> Calls { get; set; }
-
         public new DbSet<TEntity> Set<TEntity>() where TEntity : ModelBase
         {
             return base.Set<TEntity>();
@@ -33,5 +31,4 @@ namespace WebApplication1.EFRepositoy
             base.OnModelCreating(builder);
         }
     }
-
 }

@@ -6,7 +6,7 @@ using WebApplication1.Models;
 
 namespace WebApplication1.Repository
 {
-    public interface ICallRepository: IRepository<Call, Guid>
+    public interface ICallRepository: IRepository<Call, Guid>, IDisposable
     {
     }
 }

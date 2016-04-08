@@ -5,16 +5,13 @@ using System.Threading.Tasks;
 using WebApplication1.Models;
 using WebApplication1.Repository;
 using Microsoft.AspNet.Mvc;
+using WebApplication1.UnitOfWork;
 
 namespace WebApplication1.Controllers
 {
     [Route("api/[controller]")]
-    public class CallsController : Controller
+    public class CallsController : ControllerBase
     {
-        [FromServices]
-        public ICallRepository CallsRepo { get; set; }
-
-        // POST api/values
         [HttpPost]
         public IActionResult Create([FromBody] Call item)
         {
@@ -22,15 +19,15 @@ namespace WebApplication1.Controllers
             {
                 return HttpBadRequest();
             }
-            CallsRepo.Add(item);
+            unitOfWork.CallRepository.Add(item);
             return CreatedAtRoute("GetCalls", new { Controller = "Calls", id = item.ID }, item);
         }
-
         [HttpGet("{id}", Name = "GetCalls")]
         public IActionResult GetById(Guid id)
         {
             System.Diagnostics.Debugger.Break();
-            var item = CallsRepo.FindById(id);
+            var item = unitOfWork.CallRepository.FindById(id);
+
             if (item == null)
             {
                 return HttpNotFound();

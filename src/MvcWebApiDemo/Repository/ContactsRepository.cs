@@ -14,7 +14,6 @@ namespace WebApplication1.Repository
         {
             base.DbContext = dbContext;
         }
-
         public override void  Add(Contact item)
         {
             if (item != null) {
@@ -23,19 +22,16 @@ namespace WebApplication1.Repository
                 base.SaveChanges();
             }
         }
-
         public override Contact FindById(Guid key)
         {
             return base.DbSet
                 .Where(e => e.ID.Equals(key))
                 .SingleOrDefault();
         }
-
         public override IEnumerable<Contact> GetAll()
         {
             return base.DbSet;
         }
-
         public override void Remove(Contact contact)
         {
             var itemToRemove = base.DbSet.SingleOrDefault(r => r.Email == contact.Email);
@@ -45,7 +41,6 @@ namespace WebApplication1.Repository
                 base.SaveChanges();
             }
         }
-
         public override void Update(Contact item)
         {
             var itemToUpdate = base.DbSet.SingleOrDefault(r => r.MobilePhone == item.MobilePhone);
