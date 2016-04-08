@@ -5,12 +5,18 @@ using System.Threading.Tasks;
 using WebApplication1.Models;
 using WebApplication1.Repository;
 using Microsoft.AspNet.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace WebApplication1.Controllers
 {
     [Route("api/[controller]")]
     public class ContactsController : ControllerBase
     {
+        public ContactsController(ILogger<ContactsController> logger):base(logger)
+        {
+
+        }
+
         [HttpGet]
         public IEnumerable<Contact> GetAll()
         {
@@ -36,6 +42,7 @@ namespace WebApplication1.Controllers
                 return HttpBadRequest();
             }
             unitOfWork.ContactRepository.Add(item);
+            _logger.LogInformation("You are here!");//just for testing purpose
             return CreatedAtRoute("GetContacts", new { Controller = "Contacts", id = item.ID }, item);
         }
 

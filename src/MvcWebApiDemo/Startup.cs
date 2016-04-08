@@ -13,6 +13,10 @@ using Microsoft.Extensions.PlatformAbstractions;
 using WebApplication1.EFRepositoy;
 using Microsoft.Data.Entity;
 using Microsoft.AspNet.Mvc;
+using Serilog;
+using System.IO;
+using Microsoft.Extensions.Logging;
+using WebApplication1.Controllers;
 
 namespace WebApplication1
 {
@@ -26,6 +30,11 @@ namespace WebApplication1
             var builder = new ConfigurationBuilder()
             .AddJsonFile("config.json")
             .AddEnvironmentVariables();
+
+            Log.Logger = new LoggerConfiguration()
+           .MinimumLevel.Debug()
+           .WriteTo.RollingFile(Path.Combine(applicationEnvironment.ApplicationBasePath, "log-{Date}.txt"))
+           .CreateLogger();
 
             Configuration = builder.Build();
         }
@@ -43,13 +52,17 @@ namespace WebApplication1
             //using Dependency Injection
             services.AddSingleton<IContactsRepository, ContactsRepository>();
             services.AddSingleton<ICallRepository, CallsRepository>();
+
+            services.AddLogging();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
         {
             app.UseIISPlatformHandler();
             app.UseMvc();
+
+            loggerFactory.AddSerilog();
         }
 
         // Entry point for the application.

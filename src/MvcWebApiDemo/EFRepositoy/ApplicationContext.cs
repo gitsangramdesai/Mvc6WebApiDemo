@@ -4,6 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Data.Entity;
 using WebApplication1.Models;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Data.Entity.Infrastructure;
+
 
 namespace WebApplication1.EFRepositoy
 {
@@ -29,6 +32,15 @@ namespace WebApplication1.EFRepositoy
             builder.Entity<Contact>().HasKey(b => b.ID);
             builder.Entity<Call>().HasKey(b => b.ID);
             base.OnModelCreating(builder);
+        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+          var config = new ConfigurationBuilder()
+          .AddJsonFile("config.json")
+          .AddEnvironmentVariables().Build();
+
+           optionsBuilder.UseSqlServer(config["Data:DefaultConnection:ConnectionString"]);
+           base.OnConfiguring(optionsBuilder);
         }
     }
 }

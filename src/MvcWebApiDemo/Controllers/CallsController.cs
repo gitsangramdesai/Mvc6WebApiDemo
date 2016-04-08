@@ -6,12 +6,18 @@ using WebApplication1.Models;
 using WebApplication1.Repository;
 using Microsoft.AspNet.Mvc;
 using WebApplication1.UnitOfWork;
+using Microsoft.Extensions.Logging;
 
 namespace WebApplication1.Controllers
 {
     [Route("api/[controller]")]
     public class CallsController : ControllerBase
     {
+        public CallsController(ILogger<ControllerBase> logger):base(logger)
+        {
+
+        }
+
         [HttpPost]
         public IActionResult Create([FromBody] Call item)
         {
