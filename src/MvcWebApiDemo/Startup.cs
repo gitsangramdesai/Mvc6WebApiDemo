@@ -17,46 +17,45 @@ using Serilog;
 using System.IO;
 using Microsoft.Extensions.Logging;
 using WebApplication1.Controllers;
+using WebApplication1.AppConfig;
+using Microsoft.Extensions.OptionsModel;
 
 namespace WebApplication1
 {
     public class Startup
     {
         public IConfigurationRoot Configuration { get; private set; }
+        private IConfigurationSection ConfigSection;
 
         public Startup(IApplicationEnvironment applicationEnvironment, IRuntimeEnvironment runtimeEnvironment)
         {
-            // Set up configuration sources.
-            var builder = new ConfigurationBuilder()
-            .AddJsonFile("config.json")
-            .AddEnvironmentVariables();
+            ConfigurationBuilder builder = new ConfigurationBuilder();
+            builder.SetBasePath(applicationEnvironment.ApplicationBasePath);
+            builder.AddJsonFile("config.json").AddJsonFile("AppSettings.json").AddEnvironmentVariables();
+            Configuration = builder.Build();
+
+            ConfigSection = Configuration.GetSection("AppSettings");
+            string logFolder = ConfigSection.Get<AppSettings>().LogSettings.AppLogPath;
 
             Log.Logger = new LoggerConfiguration()
            .MinimumLevel.Debug()
-           .WriteTo.RollingFile(Path.Combine(applicationEnvironment.ApplicationBasePath, "log-{Date}.txt"))
+           .WriteTo.RollingFile(Path.Combine(applicationEnvironment.ApplicationBasePath, logFolder, "{Date}.txt"))
            .CreateLogger();
-
-            Configuration = builder.Build();
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            //MvcCore - basic package needed for MVC 6 Web API
             services.AddMvcCore().AddJsonFormatters(a => a.ContractResolver = new CamelCasePropertyNamesContractResolver());
-
             services.AddEntityFramework().AddSqlServer().AddDbContext<ApplicationContext>(options =>options.UseSqlServer(Configuration["Data:DefaultConnection:ConnectionString"]));
-            services.AddMvc();
+            services.AddLogging();
+            services.Configure<AppSettings>(ConfigSection); //strongly typed AppSettings
 
             //using Dependency Injection
             services.AddSingleton<IContactsRepository, ContactsRepository>();
             services.AddSingleton<ICallRepository, CallsRepository>();
-
-            services.AddLogging();
+            services.AddMvc();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
         {
             app.UseIISPlatformHandler();
@@ -65,7 +64,6 @@ namespace WebApplication1
             loggerFactory.AddSerilog();
         }
 
-        // Entry point for the application.
         public static void Main(string[] args) => WebApplication.Run<Startup>(args);
     }
 }

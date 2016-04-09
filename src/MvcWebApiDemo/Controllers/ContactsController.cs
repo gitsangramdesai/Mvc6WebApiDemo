@@ -6,13 +6,15 @@ using WebApplication1.Models;
 using WebApplication1.Repository;
 using Microsoft.AspNet.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.OptionsModel;
+using WebApplication1.AppConfig;
 
 namespace WebApplication1.Controllers
 {
     [Route("api/[controller]")]
     public class ContactsController : ControllerBase
     {
-        public ContactsController(ILogger<ContactsController> logger):base(logger)
+        public ContactsController(ILogger<ContactsController> logger, IOptions<AppSettings> appSettings) :base(logger, appSettings)
         {
 
         }
@@ -20,13 +22,15 @@ namespace WebApplication1.Controllers
         [HttpGet]
         public IEnumerable<Contact> GetAll()
         {
-            return unitOfWork.ContactRepository.GetAll();
+            string siteName = AppSettings.SiteTitle;
+            string Logs = AppSettings.LogSettings.AppLogPath;
+            return UnitOfWork.ContactRepository.GetAll();
         }
 
         [HttpGet("{id}", Name = "GetContacts")]
         public IActionResult GetById(Guid id)
         {
-            var item = unitOfWork.ContactRepository.FindById(id);
+            var item = UnitOfWork.ContactRepository.FindById(id);
             if (item == null)
             {
                 return HttpNotFound();
@@ -41,8 +45,8 @@ namespace WebApplication1.Controllers
             {
                 return HttpBadRequest();
             }
-            unitOfWork.ContactRepository.Add(item);
-            _logger.LogInformation("You are here!");//just for testing purpose
+            UnitOfWork.ContactRepository.Add(item);
+            Logger.LogInformation("You are here!");//just for testing purpose
             return CreatedAtRoute("GetContacts", new { Controller = "Contacts", id = item.ID }, item);
         }
 
@@ -53,19 +57,19 @@ namespace WebApplication1.Controllers
             {
                 return HttpBadRequest();
             }
-            var contactObj = unitOfWork.ContactRepository.FindById(id);
+            var contactObj = UnitOfWork.ContactRepository.FindById(id);
             if (contactObj == null)
             {
                 return HttpNotFound();
             }
-            unitOfWork.ContactRepository.Update(item);
+            UnitOfWork.ContactRepository.Update(item);
             return new NoContentResult();
         }
 
         [HttpDelete("{id}")]
         public void Delete(Contact item)
         {
-            unitOfWork.ContactRepository.Remove(item);
+            UnitOfWork.ContactRepository.Remove(item);
         }
     }
 }

@@ -7,13 +7,15 @@ using WebApplication1.Repository;
 using Microsoft.AspNet.Mvc;
 using WebApplication1.UnitOfWork;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.OptionsModel;
+using WebApplication1.AppConfig;
 
 namespace WebApplication1.Controllers
 {
     [Route("api/[controller]")]
     public class CallsController : ControllerBase
     {
-        public CallsController(ILogger<ControllerBase> logger):base(logger)
+        public CallsController(ILogger<ControllerBase> logger, IOptions<AppSettings> appSettings) :base(logger, appSettings)
         {
 
         }
@@ -25,14 +27,14 @@ namespace WebApplication1.Controllers
             {
                 return HttpBadRequest();
             }
-            unitOfWork.CallRepository.Add(item);
+            UnitOfWork.CallRepository.Add(item);
             return CreatedAtRoute("GetCalls", new { Controller = "Calls", id = item.ID }, item);
         }
         [HttpGet("{id}", Name = "GetCalls")]
         public IActionResult GetById(Guid id)
         {
             System.Diagnostics.Debugger.Break();
-            var item = unitOfWork.CallRepository.FindById(id);
+            var item = UnitOfWork.CallRepository.FindById(id);
 
             if (item == null)
             {

@@ -4,22 +4,26 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
 using Microsoft.Extensions.Logging;
+using WebApplication1.AppConfig;
+using Microsoft.Extensions.OptionsModel;
 
 namespace WebApplication1.Controllers
 {
     public class ControllerBase : Controller
     {
-        protected UnitOfWork.UnitOfWork unitOfWork = new UnitOfWork.UnitOfWork();
-        protected readonly ILogger _logger;
+        protected readonly UnitOfWork.UnitOfWork UnitOfWork = new UnitOfWork.UnitOfWork();
+        protected readonly ILogger Logger;
+        protected readonly AppSettings AppSettings;
 
-        public ControllerBase(ILogger<ControllerBase> logger)
+        public ControllerBase(ILogger<ControllerBase> logger, IOptions<AppSettings> appSettings)
         {
-            _logger = logger;
+            Logger = logger;
+            AppSettings = appSettings.Value;
         }
 
         protected override void Dispose(bool disposing)
         {
-            unitOfWork.Dispose();
+            UnitOfWork.Dispose();
             base.Dispose(disposing);
         }
     }
