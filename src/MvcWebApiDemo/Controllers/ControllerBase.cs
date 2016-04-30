@@ -6,6 +6,7 @@ using Microsoft.AspNet.Mvc;
 using Microsoft.Extensions.Logging;
 using WebApplication1.AppConfig;
 using Microsoft.Extensions.OptionsModel;
+using WebApplication1.Identity;
 
 namespace WebApplication1.Controllers
 {
@@ -14,11 +15,13 @@ namespace WebApplication1.Controllers
         protected readonly UnitOfWork.UnitOfWork UnitOfWork = new UnitOfWork.UnitOfWork();
         protected readonly ILogger Logger;
         protected readonly AppSettings AppSettings;
+        protected readonly IApplicationIdentityRepository IdentityRepository;
 
-        public ControllerBase(ILogger<ControllerBase> logger, IOptions<AppSettings> appSettings)
+        public ControllerBase(ILogger<ControllerBase> logger, IOptions<AppSettings> appSettings, IApplicationIdentityRepository identityRepository)
         {
             Logger = logger;
             AppSettings = appSettings.Value;
+            IdentityRepository = identityRepository;
         }
 
         protected override void Dispose(bool disposing)

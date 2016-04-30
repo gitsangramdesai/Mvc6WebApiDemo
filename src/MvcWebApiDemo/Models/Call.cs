@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace WebApplication1.Models
 {
-    public class Call : ModelBase
+    public class Call : ModelWithTracking
     {
         public Guid ContactId { get; set; }
         public string Purpose { get; set; }

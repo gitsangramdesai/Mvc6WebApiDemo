@@ -8,21 +8,33 @@ using Microsoft.AspNet.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.OptionsModel;
 using WebApplication1.AppConfig;
+using WebApplication1.Identity;
+using WebApplication1.Helper;
+using System.IO;
 
 namespace WebApplication1.Controllers
 {
     [Route("api/[controller]")]
     public class ContactsController : ControllerBase
     {
-        public ContactsController(ILogger<ContactsController> logger, IOptions<AppSettings> appSettings) :base(logger, appSettings)
+        public ContactsController(ILogger<ContactsController> logger, IOptions<AppSettings> appSettings, IApplicationIdentityRepository identityRepository) :base(logger, appSettings, identityRepository)
         {
 
         }
 
-        [HttpGet]
-        public IEnumerable<Contact> GetAll()
+        
+        [HttpGet]//api/Contacts
+        public async Task<IEnumerable<Contact>> GetAll()
         {
-            string siteName = AppSettings.SiteTitle;
+           // UserProfilePicture dp = await IdentityRepository.GetUserProfilePictureByIdAsync("6");
+
+            string path = "E:\\img\\1.jpg";
+            
+            byte[] imageInByte = System.IO.File.ReadAllBytes(path);
+
+            bool x =await IdentityRepository.SaveProfilePic(6, "sangram", imageInByte);
+
+            string siteName = AppSettings.SiteSettings.SiteTitle;
             string Logs = AppSettings.LogSettings.AppLogPath;
             return UnitOfWork.ContactRepository.GetAll();
         }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using WebApplication1.Models;
 using WebApplication1.EFRepositoy;
 using Microsoft.Data.Entity;
+using WebApplication1.IRepository;
 
 namespace WebApplication1.Repository
 {

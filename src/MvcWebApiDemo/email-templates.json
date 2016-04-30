@@ -1,0 +1,6 @@
+﻿{
+  "ForgotPassword": {
+    "Subject": "Password reset request",
+    "Body": "Dear {fullname}, your token is {token}"
+  }
+}

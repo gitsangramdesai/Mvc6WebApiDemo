@@ -9,13 +9,14 @@ using WebApplication1.UnitOfWork;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.OptionsModel;
 using WebApplication1.AppConfig;
+using WebApplication1.Identity;
 
 namespace WebApplication1.Controllers
 {
     [Route("api/[controller]")]
     public class CallsController : ControllerBase
     {
-        public CallsController(ILogger<ControllerBase> logger, IOptions<AppSettings> appSettings) :base(logger, appSettings)
+        public CallsController(ILogger<ControllerBase> logger, IOptions<AppSettings> appSettings, IApplicationIdentityRepository identityRepository) :base(logger, appSettings, identityRepository)
         {
 
         }
@@ -31,6 +32,7 @@ namespace WebApplication1.Controllers
             return CreatedAtRoute("GetCalls", new { Controller = "Calls", id = item.ID }, item);
         }
         [HttpGet("{id}", Name = "GetCalls")]
+
         public IActionResult GetById(Guid id)
         {
             System.Diagnostics.Debugger.Break();

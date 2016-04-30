@@ -4,14 +4,27 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebApplication1.Models;
 
-namespace WebApplication1.Repository
+namespace WebApplication1.IRepository
 {
-    public interface IRepository<TEnt, in TPk> : IDisposable  where TEnt:ModelBase
+    public interface IRepository
+    {
+
+    }
+    public interface IRepositoryBase<TEnt, in TPk> : IDisposable,IRepository  where TEnt: ModelWithTracking
     {
         IEnumerable<TEnt> GetAll();
+
         TEnt FindById(TPk id);
-        void Add(TEnt entity);
+        TEnt[] FindById(Guid[] ids);
+
         void Remove(TEnt entity);
-        void Update(TEnt entity);
+        void Remove(TEnt[] entities);
+        void Remove(TPk id);
+        void Remove(TPk[] ids);
+
+        TEnt Update(TEnt entity);
+
+        TEnt Add(TEnt entity);
+        TEnt[] Add(TEnt[] values);
     }
 }

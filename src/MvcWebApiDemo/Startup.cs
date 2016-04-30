@@ -1,31 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNet.Builder;
+﻿using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
-using Microsoft.AspNet.Http;
 using Microsoft.Extensions.DependencyInjection;
-using WebApplication1.Repository;
 using Newtonsoft.Json.Serialization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.PlatformAbstractions;
 using WebApplication1.EFRepositoy;
 using Microsoft.Data.Entity;
-using Microsoft.AspNet.Mvc;
 using Serilog;
 using System.IO;
 using Microsoft.Extensions.Logging;
-using WebApplication1.Controllers;
 using WebApplication1.AppConfig;
-using Microsoft.Extensions.OptionsModel;
+using WebApplication1.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.Identity;
 
 namespace WebApplication1
 {
     public class Startup
     {
         public IConfigurationRoot Configuration { get; private set; }
-        private IConfigurationSection ConfigSection;
 
         public Startup(IApplicationEnvironment applicationEnvironment, IRuntimeEnvironment runtimeEnvironment)
         {
@@ -34,8 +27,7 @@ namespace WebApplication1
             builder.AddJsonFile("config.json").AddJsonFile("AppSettings.json").AddEnvironmentVariables();
             Configuration = builder.Build();
 
-            ConfigSection = Configuration.GetSection("AppSettings");
-            string logFolder = ConfigSection.Get<AppSettings>().LogSettings.AppLogPath;
+            string logFolder = Configuration.GetSection("AppSettings").Get<AppSettings>().LogSettings.AppLogPath;
 
             Log.Logger = new LoggerConfiguration()
            .MinimumLevel.Debug()
@@ -45,22 +37,38 @@ namespace WebApplication1
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvcCore().AddJsonFormatters(a => a.ContractResolver = new CamelCasePropertyNamesContractResolver());
-            services.AddEntityFramework().AddSqlServer().AddDbContext<ApplicationContext>(options =>options.UseSqlServer(Configuration["Data:DefaultConnection:ConnectionString"]));
             services.AddLogging();
-            services.Configure<AppSettings>(ConfigSection); //strongly typed AppSettings
+            services.AddMvcCore().AddJsonFormatters(a => a.ContractResolver = new CamelCasePropertyNamesContractResolver());
+
+            //application context
+            services.AddEntityFramework().AddSqlServer().
+                AddDbContext<ApplicationContext>(options => options.UseSqlServer(Configuration["Data:DefaultConnection:ConnectionString"]));
+
+            //identity context
+            services.AddEntityFramework().AddSqlServer().
+              AddDbContext<ApplicationIdentityContext>(options => options.UseSqlServer(Configuration["Data:DefaultConnection:ConnectionString"]));
+
+            services.AddIdentity<ApplicationUser, ApplicationRole>()
+            .AddEntityFrameworkStores<ApplicationIdentityContext,int>()
+            .AddDefaultTokenProviders();
+
+
+            //strongly typed AppSettings
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings")); 
 
             //using Dependency Injection
-            services.AddSingleton<IContactsRepository, ContactsRepository>();
-            services.AddSingleton<ICallRepository, CallsRepository>();
+            services.AddScoped(typeof(UserManager<Identity.ApplicationUser>), typeof(Identity.ApplicationUserManager<Identity.ApplicationUser>));
+            services.AddScoped<IApplicationIdentityRepository, ApplicationIdentityRepository>();
+            //services.AddSingleton<IContactsRepository, ContactsRepository>();
+            //services.AddSingleton<ICallRepository, CallsRepository>();
             services.AddMvc();
         }
 
         public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
         {
             app.UseIISPlatformHandler();
+            app.UseIdentity();
             app.UseMvc();
-
             loggerFactory.AddSerilog();
         }
 

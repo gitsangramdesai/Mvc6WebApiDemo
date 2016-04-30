@@ -3,14 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{DBEECC88-7196-48DD-90F2-4CC58175D013}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{731C0E07-F639-4D76-A907-E12D05E58A55}"
-	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
-	EndProjectSection
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "MvcWebApiDemo", "src\MvcWebApiDemo\MvcWebApiDemo.xproj", "{2B86AAD7-B213-49D5-B0A5-B7305ABADD28}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "MvcWebApiDemo", "MvcWebApiDemo.xproj", "{2B86AAD7-B213-49D5-B0A5-B7305ABADD28}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,8 +18,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{2B86AAD7-B213-49D5-B0A5-B7305ABADD28} = {DBEECC88-7196-48DD-90F2-4CC58175D013}
 	EndGlobalSection
 EndGlobal

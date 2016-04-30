@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace WebApplication1.Models
 {
-    public class Contact: ModelBase
+    public class Contact: ModelWithTracking
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
